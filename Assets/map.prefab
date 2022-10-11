@@ -111,3 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c872f949eed6b481293b88bd110e43d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grassPrefab: {fileID: 6508733494055544535, guid: eb6988fabf47644d798f25065c90fe62,
+    type: 3}
+  treePrefab: {fileID: 148939463305314929, guid: 713cc7c4986aa420dab3280eb2a075b0,
+    type: 3}

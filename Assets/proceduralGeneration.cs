@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class proceduralGeneration : MonoBehaviour
 { //new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
+    public GameObject grassPrefab;
+    public GameObject treePrefab;
     Vector3 rememberedPosition;
     float movespeed = 1f;
-    public void generateMap(Vector2 seed)
+    public void generateMap(Vector2 seed, float scale, float heightMultiplier)
     {
         movespeed = Random.Range(0.5f, 2f);
         rememberedPosition = transform.position;
@@ -17,19 +19,40 @@ public class proceduralGeneration : MonoBehaviour
         {
             Vector3 vert = verticies[i];
             float finalHeight = 0;
-            float height = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 100 + seed.x, (transform.position.z + vert.z) / 100 + seed.y)) * 10f;
-            float height_a = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 20 + seed.x, (transform.position.z + vert.z) / 20 + seed.y)) * 10f;
-            float height_b = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 2 + seed.x, (transform.position.z + vert.z) / 2 + seed.y));
-            float ocean = 3f - Mathf.PerlinNoise((transform.position.x + vert.x) / 100 + seed.x, (transform.position.z + vert.z) / 100 + seed.y) * 3f;
+            float height = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 100 * scale + seed.x, (transform.position.z + vert.z) / 100 * scale + seed.y)) * 10f;
+            float height_a = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 20 * scale + seed.x, (transform.position.z + vert.z) / 20 * scale + seed.y)) * 10f * heightMultiplier;
+            float height_b = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 2 * scale + seed.x, (transform.position.z + vert.z) / 2 * scale + seed.y)) * heightMultiplier;
+            float ocean = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 100 * scale + seed.x, (transform.position.z + vert.z) / 100 * scale + seed.y)) * 3f * heightMultiplier;
+            float islandMap = (0.5f - Mathf.PerlinNoise((transform.position.x + vert.x) / 1000 * scale - seed.x, (transform.position.z + vert.z) / 1000 * scale - seed.y)) * 5f * heightMultiplier;
+            if (islandMap <= 0)
+            {
+                islandMap = -Mathf.Pow(3, Mathf.Abs(islandMap));
+            }
 
             finalHeight += Mathf.Pow(2, height);
             finalHeight += height_a;
             finalHeight += height_b;
             finalHeight += ocean;
+            finalHeight += islandMap;
             finalHeight -= Mathf.Pow(2, ocean);
 
             vert.y = finalHeight;
             verticies[i] = vert;
+
+            float grassMap = Mathf.PerlinNoise((-transform.position.x + vert.x) / 2 + seed.x, (-transform.position.z + vert.z) / 2 + seed.y);
+            if (grassMap > 0.7 && finalHeight >= 0 && grassMap < 0.9f)
+            {
+                GameObject _grassInstance = Instantiate(grassPrefab, vert + transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+                _grassInstance.transform.localScale *= Random.Range(1f, 3f);
+                _grassInstance.transform.parent = transform;
+
+            }
+            else if (grassMap >= 0.9f && finalHeight >= 0)
+            {
+                GameObject _treeInstance = Instantiate(treePrefab, vert + transform.position, Quaternion.identity);
+                _treeInstance.transform.localScale *= Random.Range(1f, 2f);
+                _treeInstance.transform.parent = transform;
+            }
         }
         mf.mesh.vertices = verticies;
         mf.mesh.RecalculateNormals();

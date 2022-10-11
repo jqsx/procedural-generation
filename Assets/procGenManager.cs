@@ -6,6 +6,8 @@ public class procGenManager : MonoBehaviour
 {
     public GameObject map;
     public int size = 5;
+    public float scale = 1f;
+    public float heightMultiplier = 1f;
     List<GameObject> chunks = new List<GameObject>();
     Vector2 seed;
     void Start()
@@ -34,11 +36,11 @@ public class procGenManager : MonoBehaviour
                 {
                     GameObject inst = Instantiate(map, chunkPosition, Quaternion.identity);
                     chunks.Add(inst);
-                    inst.GetComponent<proceduralGeneration>().generateMap(seed);
-                    yield return new WaitForSeconds(0.001f);
+                    inst.GetComponent<proceduralGeneration>().generateMap(seed, scale, heightMultiplier);
+                    if (size > 30) yield return new WaitForSeconds(0.001f);
                 }
             }
-            yield return new WaitForSeconds(0.001f);
+            if (size > 10) yield return new WaitForSeconds(0.001f);
         }
         yield return new WaitForSeconds(0.1f);
         loop();
