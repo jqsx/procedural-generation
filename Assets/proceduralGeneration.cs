@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class proceduralGeneration : MonoBehaviour
 { //new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
-    public GameObject grassPrefab;
-    public GameObject treePrefab;
+    public GameObject[] grassPrefabs;
+    public GameObject[] treePrefabs;
     Vector3 rememberedPosition;
     float movespeed = 1f;
     public void generateMap(Vector2 seed, float scale, float heightMultiplier)
@@ -42,14 +42,16 @@ public class proceduralGeneration : MonoBehaviour
             float grassMap = Mathf.PerlinNoise((-transform.position.x + vert.x) / 2 + seed.x, (-transform.position.z + vert.z) / 2 + seed.y);
             if (grassMap > 0.7 && finalHeight >= 0 && grassMap < 0.9f)
             {
-                GameObject _grassInstance = Instantiate(grassPrefab, vert + transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+                int rng = (int)Mathf.Floor(Mathf.Abs(Mathf.Cos(finalHeight)) * (grassPrefabs.Length - 1));
+                GameObject _grassInstance = Instantiate(grassPrefabs[rng], vert + transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
                 _grassInstance.transform.localScale *= Random.Range(1f, 3f);
                 _grassInstance.transform.parent = transform;
 
             }
             else if (grassMap >= 0.9f && finalHeight >= 0)
             {
-                GameObject _treeInstance = Instantiate(treePrefab, vert + transform.position, Quaternion.identity);
+                int rng = (int)Mathf.Floor(Mathf.Abs(Mathf.Cos(finalHeight)) * (treePrefabs.Length - 1));
+                GameObject _treeInstance = Instantiate(treePrefabs[rng], vert + transform.position, Quaternion.identity);
                 _treeInstance.transform.localScale *= Random.Range(1f, 2f);
                 _treeInstance.transform.parent = transform;
             }
