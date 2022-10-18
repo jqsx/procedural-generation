@@ -50,5 +50,10 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    m_Colors: []
+    - _smoothness: 0
+    m_Colors:
+    - _Color: {r: 0.23028657, g: 0.4245283, b: 0.23514263, a: 0}
+    - _Color_1: {r: 0.1981132, g: 0.10746706, b: 0.10746706, a: 0}
+    - _sand: {r: 1, g: 0.9250832, b: 0.6462264, a: 0}
+    - _water: {r: 0, g: 0.25332513, b: 0.3679245, a: 0}
   m_BuildTextureStacks: []

@@ -6,6 +6,7 @@ public class movement : MonoBehaviour
 {
     Rigidbody rb;
     float rotationX = 0;
+    public float speed = 100f;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -18,8 +19,9 @@ public class movement : MonoBehaviour
     {
         float vertical = Input.GetAxis("Vertical");
         float horizontal = Input.GetAxis("Horizontal");
-
-        rb.velocity = (transform.forward * vertical + transform.right * horizontal).normalized * 1000 * Time.deltaTime;
+        float yvel = rb.velocity.y;
+        rb.velocity = (transform.forward * vertical + transform.right * horizontal).normalized * speed;
+        rb.velocity = new Vector3(rb.velocity.x, yvel, rb.velocity.z);
         cameraRotation();
     }
 

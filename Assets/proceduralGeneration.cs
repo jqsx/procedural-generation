@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class proceduralGeneration : MonoBehaviour
 { //new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
+    public Transform water;
     public GameObject[] grassPrefabs;
     public GameObject[] treePrefabs;
     Vector3 rememberedPosition;
@@ -43,7 +44,7 @@ public class proceduralGeneration : MonoBehaviour
             if (grassMap > 0.7 && finalHeight >= 0 && grassMap < 0.9f)
             {
                 int rng = (int)Mathf.Floor(Mathf.Abs(Mathf.Cos(finalHeight)) * (grassPrefabs.Length - 1));
-                GameObject _grassInstance = Instantiate(grassPrefabs[rng], vert + transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+                GameObject _grassInstance = Instantiate(grassPrefabs[rng], vert + transform.position, Quaternion.identity);
                 _grassInstance.transform.localScale *= Random.Range(1f, 3f);
                 _grassInstance.transform.parent = transform;
 
@@ -57,14 +58,16 @@ public class proceduralGeneration : MonoBehaviour
             }
         }
         mf.mesh.vertices = verticies;
+        mf.mesh.RecalculateBounds();
         mf.mesh.RecalculateNormals();
         mc.sharedMesh = mf.mesh;
         transform.position -= new Vector3(0, 30, 0);
     }
 
     private void Update()
-    {
+    { 
         transform.position = Vector3.Lerp(transform.position, rememberedPosition, 7 * Time.deltaTime * movespeed);
+        water.position = new Vector3(transform.position.x, 0, transform.position.z);
     }
 
     public void removeChunk()
